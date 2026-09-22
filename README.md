@@ -1,4 +1,4 @@
- Proyecto de Sistemas Operativos
+# Proyecto de Sistemas Operativos
 ## Implementación de un Shell para xv6
 ### Integrantes
 - Ana Isabella Gómez García
