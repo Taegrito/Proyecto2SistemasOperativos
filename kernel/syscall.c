@@ -26,7 +26,7 @@ int
 fetchstr(uint64 addr, char *buf, int max)
 {
   struct proc *p = myproc();
-  if (copyinstr(p->pagetable, buf, addr, max) < 0)
+  if(copyinstr(p->pagetable, buf, addr, max) < 0)
     return -1;
   return strlen(buf);
 }
@@ -103,6 +103,8 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_sync(void);
+extern uint64 sys_trace(void);
+extern uint64 sys_sysinfo(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -130,6 +132,8 @@ static uint64 (*syscalls[])(void) = {
   [SYS_mkdir]   sys_mkdir,
   [SYS_close]   sys_close,
   [SYS_sync]    sys_sync,
+  [SYS_trace]   sys_trace,
+  [SYS_sysinfo] sys_sysinfo,
   // clang-format on
 };
 
@@ -140,12 +144,22 @@ syscall(void)
   struct proc *p = myproc();
 
   num = p->trapframe->a7;
-  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    // Use num to lookup the system call function for num, call it,
-    // and store its return value in p->trapframe->a0
+
+  if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
+
+    if (p->trace_mask == num || num == SYS_kill) {
+      printk("PID: %d\n", p->pid);
+      printk("SYSCALL: %d\n", num);
+      printk("RETURN: %d\n", (int)p->trapframe->a0);
+      printk("s0: 0x%p\n", (void*)p->trapframe->s0);
+      printk("s1: 0x%p\n", (void*)p->trapframe->s1);
+      printk("a0: 0x%p\n", (void*)p->trapframe->a0);
+      printk("a1: 0x%p\n", (void*)p->trapframe->a1);
+    }
   } else {
-    printk("%d %s: unknown sys call %d\n", p->pid, p->name, num);
+    printk("%d %s: unknown sys call %d\n",
+            p->pid, p->name, num);
     p->trapframe->a0 = -1;
   }
 }
