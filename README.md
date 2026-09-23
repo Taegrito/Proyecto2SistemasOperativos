@@ -8,7 +8,7 @@ Sistemas Operativos
 2026-2
 ---
 # Descripción
-Este proyecto
+Este proyecto realizado en xv6-riscv, es un programa interactivo que permite hacer llamadas trace y sysinfo, a través de una división estructural entre el modo kernel y el modo usuario
 # Estructura de archivos
 ```text
 user/
@@ -30,19 +30,42 @@ autoevaluacion/
 ## Descripción de la solución
 Para este proyecto se utilizan archivos modificados de la carpeta, en los que se incluirán las llamadas al trace y al sysinfo, para que el cóodigo pueda correr con normalidad.
 ### trace.c
-
+Programa de espacio de usuario para probar el comando trace.
 ### sysinfo.c
+Programa de espacio de usuario para probar el comando sysinfo.
 ### user.h
+Es la cabecera que incluye los prototipos de las llamadas al sistema y funciones de biblioteca disponibles para los programas de usuario
+* **Modificaciones:** se añadieron los prototipos de la llamada
+```
+int trace(int);
+int sysinfo(struct sysinfo *);
+```
 ### usys.pl
+Genera dinámicamente el código ensamblador.
+* **Modificaciones:** se añadieron las entradas de los comandos.
+```
+entry("trace");
+entry("sysinfo");
+```
 ### utils.h
+
 ### defs.h
+Contiene los prototipos de las funciones globales del kernel.
+* **Modificaciones:**
+Se agregaron las funciones del kernel para que puedan ser invocadas en distintos archivos.
+```
+sys_trace
+sys_sysinfo
+```
 ### proc.c
 Cuenta con la implementación de las funciones del kernel.
 * **Modificaciones:** se añadieron el campo p->trace_mask=0 para evitar basura y np->trace_mask=p->trace_mask para que el proceso hijo herede el mapeo del proceso padre.
-```
-
-```
 ### proc.h 
+Define la estructura de control de procesos.
+* **Modificaciones:** se agregó int trace_mask
+```
+int trace_mask;
+```
 Define la estructura de los procesos
 * **Modificaciones:** Se agregregó el campo int trace_mask;
 ```
@@ -121,38 +144,24 @@ git clone https://github.com/Taegrito/Proyecto2SistemasOperativos.git
 ```
 ## Paso 2. Copiar archivos
 Copiar todos los archivos entregados dentro del directorio `user/ y kernel/`.
-## Paso 3. Modificar el Makefile
-Agregar el programa al listado de aplicaciones de usuario.
-## Paso 4. Compilar xv6
+## Paso 3. Compilar xv6
 ```bash
 make clean
 make qemu
 ```
-## Paso 5. Ejecutar las llamadas
+## Paso 4. Ejecutar las llamadas
 ```
 trace sys_kill
 sysinfo
 ```
 ---
-# Casos de prueba
-- Ejecución simple.
-- Argumentos.
-- Redirección de entrada.
-- Redirección de salida.
-- Tuberías simples.
-- Tuberías múltiples.
-- Comando `exit`.
----
-# Decisiones de diseño
-- Separación entre análisis sintáctico y ejecución.
-- Uso de procesos independientes para cada etapa de una tubería.
-- Manejo explícito de descriptores de archivo durante las redirecciones.
----
-# Limitaciones conocidas
-- No soporta comillas.
-- No soporta variables de entorno.
-- No soporta ejecución en segundo plano.
----
+# Vídeo explicativo
+En el siguiente vídeo se encuentra ua explicación del funcionamiento del código
+```bash
+
+```
+
+--- 
 # Declaración de uso de IA
 Durante el desarrollo del proyecto se utilizaron herramientas de inteligencia
 artificial generativa como apoyo para comprensión de conceptos, revisión de
