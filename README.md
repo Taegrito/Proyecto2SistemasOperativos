@@ -158,7 +158,7 @@ sysinfo
 # Vídeo explicativo
 En el siguiente vídeo se encuentra ua explicación del funcionamiento del código
 ```bash
-
+https://youtu.be/GWPUPiRvHiE
 ```
 
 --- 
